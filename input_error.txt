@@ -1,0 +1,12 @@
+int main()
+{
+    int x = 0;
+
+    if(x > 5)
+    {
+        x = x + 1;
+    // missing closing brace for the if-block, and a missing semicolon below
+    x = x + 2
+
+    return 0;
+}
