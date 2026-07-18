@@ -1,191 +1,387 @@
-# Compiler-Based Code Complexity Analyzer
+<h1 align="center">Compiler-Based Code Complexity Analyzer</h1>
 
-## Project Overview
+<p align="center">
+A Compiler Construction Term Project implemented in <b>C++</b> that performs lexical analysis, recursive-descent parsing, parse tree construction, structural analysis, and complexity calculation for a simplified C-like language.
+</p>
 
-A Compiler Construction term project that applies the front-end phases of a
-compiler — lexical analysis, syntax analysis (with an actual parse tree),
-and structural analysis — to a simplified C-like language, in order to
-measure and report a program's structural complexity.
+<p align="center">
 
-Unlike a traditional compiler, this system does not generate machine code.
-It stops after building the parse tree and analyzing it, producing a
-complexity report instead.
+![C++](https://img.shields.io/badge/Language-C%2B%2B-blue)
+![Compiler Construction](https://img.shields.io/badge/Course-Compiler%20Construction-green)
+![Project](https://img.shields.io/badge/Type-Term%20Project-orange)
+![Status](https://img.shields.io/badge/Status-Completed-brightgreen)
 
-**Supported language subset:** a single parameterless function definition
-containing variable declarations, arithmetic/logical expressions,
-assignment (including `+=`, `-=`, `*=`, `/=`), increment/decrement,
-`if` / `else if` / `else`, `while`, `for`, and `return`.
+</p>
 
 ---
 
-## Project Objectives
+# 📑 Table of Contents
 
-- Apply compiler construction concepts practically.
-- Implement lexical analysis that produces a correct, complete token stream.
-- Implement a recursive-descent parser that **builds an actual parse tree**
-  (not just validates tokens) and reports syntax errors with line numbers.
-- Analyze the parse tree to extract control-flow structure.
-- Calculate a complexity score from that structure.
-- Generate a readable complexity report.
-
----
-
-## Architecture
-
-```
-   Source Code
-        |
-        v
-  Lexical Analyzer  -->  Token Stream (with line numbers)
-        |
-        v
-      Parser         -->  Parse Tree (AST)
-        |
-        v
- Structural Analyzer -->  Metrics (decision points, nesting depth...)
-        |
-        v
-  Report Generator   -->  Complexity Report
-```
-
-Each phase is a separate translation unit:
-
-| File            | Responsibility                                             |
-| ---------------- | ----------------------------------------------------------- |
-| `lexer.h/.cpp`   | Source text -> token stream. Tracks line numbers.            |
-| `ast.h/.cpp`     | Parse tree node definition + pretty-printer.                |
-| `parser.h/.cpp`  | Recursive-descent parser with operator-precedence expression parsing. Builds the AST, throws `ParseError` on invalid syntax. |
-| `analyzer.h/.cpp`| Walks the AST to compute structural metrics and the complexity score. |
-| `report.h/.cpp`  | Formats and prints the final report.                        |
-| `main.cpp`       | Wires the phases together; catches `LexError`/`ParseError`. |
+* 📌 Project Overview
+* 🎯 Project Objectives
+* ✨ Features
+* 🏗️ System Architecture
+* 📂 Project Structure
+* 🔍 Lexical Analysis
+* 🌳 Syntax Analysis
+* 📊 Structural Analysis
+* 📈 Complexity Calculation
+* ⚙️ Compilation & Execution
+* 🧪 Test Files Included
+* 💻 Sample Output
+* ⚠️ Known Limitations
+* 🚀 Future Enhancements
+* 🛠 Technologies Used
+* 👨‍💻 Project Information
 
 ---
 
-## Lexical Analysis
+# 📌 Project Overview
 
-Token types: `KEYWORD`, `IDENTIFIER`, `NUMBER`, `OPERATOR`, `DELIMITER`,
-`STRING`, `EOF_TOKEN`. Each token also carries the source line it came from.
+The **Compiler-Based Code Complexity Analyzer** is an individual **Compiler Construction Term Project** developed in **C++**.
 
-Handles, correctly (verified — see Testing section):
-- Identifiers with underscores (`my_count`, not just `mycount`)
-- Multi-character operators: `== != <= >= && || ++ -- += -= *= /=`
-- Integer and float literals (`10`, `3.14`)
-- Line comments `//` and block comments `/* ... */`
-- Unrecognized characters raise a `LexError` with the line number instead
-  of being silently dropped.
+Unlike a traditional compiler that translates source code into machine code, this project focuses entirely on the **front-end phases of compilation**. It performs lexical analysis, syntax analysis, parse tree construction, and structural analysis to evaluate the complexity of programs written in a simplified C-like language.
 
-## Syntax Analysis
+Instead of generating executable code, the analyzer produces a detailed complexity report describing the structural characteristics of the source program.
 
-A genuine recursive-descent parser with a full expression grammar
-(logical OR/AND, equality, relational, additive, multiplicative, unary,
-primary — correct operator precedence), not a token-skipper. It **builds
-and returns an AST** representing the program's structure; pass `--tree`
-on the command line to print it.
+**Supported Language Features**
 
-Malformed input raises a `ParseError` naming what was expected, what was
-found, and the line number — see `input_error.txt` for a working demo
-(missing semicolon, unclosed block).
-
-## Structural Analysis
-
-Walks the parse tree (not the raw token stream) to count:
-- `if` / `else if` / `else` occurrences
-- `for` and `while` loops
-- Decision points (`if` + `else if` + `for` + `while`)
-- Maximum block-nesting depth
-
-## Complexity Calculation
-
-```
-Complexity Score = 1 + (decision points) + (nesting weight)
-nesting weight    = max(0, maxNestingDepth - 1)
-```
-
-This is called **"Complexity Score"**, not "Cyclomatic Complexity" —
-McCabe's cyclomatic complexity is a specific formula (`E - N + 2P`); this
-project uses a simpler weighted score as originally defined in the term
-project proposal, and the report labels it accordingly.
-
-| Score Range | Classification |
-| ----------- | -------------- |
-| 1 – 5       | Low            |
-| 6 – 15      | Medium         |
-| Above 15    | High           |
+* Single parameterless function definition
+* Variable declarations
+* Arithmetic and logical expressions
+* Assignment operators (`=`, `+=`, `-=`, `*=`, `/=`)
+* Increment and decrement operators
+* `if`
+* `else if`
+* `else`
+* `while`
+* `for`
+* `return`
 
 ---
 
-## Compilation & Execution
+# 🎯 Project Objectives
+
+* Apply compiler construction concepts in a practical implementation.
+* Perform lexical analysis and generate a complete token stream.
+* Implement a recursive-descent parser that constructs a real parse tree (AST).
+* Detect syntax errors with meaningful messages and line numbers.
+* Analyze program structure using the generated parse tree.
+* Calculate a structural complexity score.
+* Generate a readable complexity report.
+
+---
+
+# ✨ Features
+
+* ✅ Hand-written Lexical Analyzer
+* ✅ Recursive Descent Parser
+* ✅ Abstract Syntax Tree (AST)
+* ✅ Structural Complexity Analysis
+* ✅ Complexity Score Calculation
+* ✅ Parse Tree Visualization
+* ✅ Syntax Error Reporting
+* ✅ Multiple Sample Input Programs
+* ✅ Modular Project Architecture
+* ✅ Easy to Extend
+
+---
+
+# 🏗️ System Architecture
+
+```text
+             Source Code
+                  │
+                  ▼
+         Lexical Analyzer
+                  │
+                  ▼
+            Token Stream
+                  │
+                  ▼
+    Recursive Descent Parser
+                  │
+                  ▼
+      Abstract Syntax Tree
+                  │
+                  ▼
+      Structural Analyzer
+                  │
+                  ▼
+        Complexity Report
+```
+
+---
+
+# 📂 Project Structure
+
+| File              | Responsibility                                                        |
+| ----------------- | --------------------------------------------------------------------- |
+| `lexer.h/.cpp`    | Converts source code into tokens while tracking line numbers.         |
+| `ast.h/.cpp`      | Defines Abstract Syntax Tree nodes and tree printer.                  |
+| `parser.h/.cpp`   | Implements a recursive-descent parser that constructs the AST.        |
+| `analyzer.h/.cpp` | Traverses the AST to compute structural metrics and complexity score. |
+| `report.h/.cpp`   | Formats and prints the final complexity report.                       |
+| `main.cpp`        | Coordinates all compiler phases and handles errors.                   |
+
+---
+
+# 🔍 Lexical Analysis
+
+The lexical analyzer scans the input source code character by character and converts it into a stream of tokens.
+
+### Supported Token Types
+
+* KEYWORD
+* IDENTIFIER
+* NUMBER
+* OPERATOR
+* DELIMITER
+* STRING
+* EOF_TOKEN
+
+### Additional Features
+
+* Identifiers containing underscores
+* Integer and floating-point numbers
+* Multi-character operators
+
+```
+== != <= >= && || ++ -- += -= *= /=
+```
+
+* Line comments
+
+```cpp
+// comment
+```
+
+* Block comments
+
+```cpp
+/* comment */
+```
+
+Any invalid character immediately produces a **LexError** together with its corresponding line number.
+
+---
+
+# 🌳 Syntax Analysis
+
+The parser is implemented using the **Recursive Descent Parsing** technique.
+
+It performs:
+
+* Recursive parsing
+* Operator precedence parsing
+* Parse tree construction
+* Syntax validation
+* Error reporting
+
+Rather than simply validating tokens, the parser constructs an **Abstract Syntax Tree (AST)** representing the structure of the program.
+
+When an invalid program is encountered, the parser throws a **ParseError** containing:
+
+* Expected symbol
+* Actual symbol
+* Source line number
+
+The parse tree can also be displayed using:
+
+```bash
+./analyzer input.txt --tree
+```
+
+---
+
+# 📊 Structural Analysis
+
+Instead of analyzing raw tokens, the analyzer traverses the generated AST to compute program complexity.
+
+The following metrics are collected:
+
+* Number of `if` statements
+* Number of `else if` branches
+* Number of `else` branches
+* Number of `for` loops
+* Number of `while` loops
+* Decision points
+* Maximum nesting depth
+
+These values are later used to compute the overall complexity score.
+
+---
+
+# 📈 Complexity Calculation
+
+The project calculates complexity using the following formula:
+
+```text
+Complexity Score =
+1 + Decision Points + Nesting Weight
+```
+
+Where
+
+```text
+Nesting Weight =
+max(0, Maximum Nesting Depth − 1)
+```
+
+### Complexity Classification
+
+| Score    | Classification |
+| -------- | -------------- |
+| 1 – 5    | Low            |
+| 6 – 15   | Medium         |
+| Above 15 | High           |
+
+**Note:** This project intentionally uses the term **Complexity Score** rather than **Cyclomatic Complexity**, since it follows the scoring approach proposed for the term project rather than McCabe's original metric.
+
+---
+
+# ⚙️ Compilation & Execution
+
+Compile
 
 ```bash
 g++ -std=c++11 lexer.cpp ast.cpp parser.cpp analyzer.cpp report.cpp main.cpp -o analyzer
 ```
 
+Run
+
 ```bash
-./analyzer input.txt              # run the report
-./analyzer input.txt --tree       # also print the parse tree
-./analyzer input_complex.txt      # deeper-nesting sample
-./analyzer input_error.txt        # demonstrates syntax-error reporting
+./analyzer input.txt
 ```
 
-On Windows, run `analyzer.exe` instead of `./analyzer`.
+Print Parse Tree
+
+```bash
+./analyzer input.txt --tree
+```
+
+Run Complex Sample
+
+```bash
+./analyzer input_complex.txt
+```
+
+Test Syntax Error Handling
+
+```bash
+./analyzer input_error.txt
+```
+
+For Windows:
+
+```bash
+analyzer.exe input.txt
+```
 
 ---
 
-## Test Files Included
+# 🧪 Test Files Included
 
-| File                    | Purpose                                                         |
-| ------------------------ | ---------------------------------------------------------------- |
-| `input.txt`              | Original sample program (matches earlier project drafts).       |
-| `input_complex.txt`      | Deeper nesting, `else if`, nested `for`/`while` — reaches higher complexity. |
-| `input_operators.txt`    | Exercises underscores and multi-character operators.            |
-| `input_error.txt`        | Deliberately broken (missing `;` and `}`) to demo error handling. |
+| File                  | Purpose                                                 |
+| --------------------- | ------------------------------------------------------- |
+| `input.txt`           | Basic sample program.                                   |
+| `input_complex.txt`   | Demonstrates nested loops and multiple decision points. |
+| `input_operators.txt` | Tests identifiers and multi-character operators.        |
+| `input_error.txt`     | Demonstrates syntax error detection.                    |
 
-## Sample Output (`input.txt`)
+---
 
-```
+# 💻 Sample Output
+
+### Structural Metrics
+
+```text
 --------- Structural Metrics ---------
+
 If Statements          : 1
 Else-If Branches       : 0
 Else Statements        : 1
-For Loops               : 1
-While Loops             : 1
-Decision Points         : 3
-Maximum Nesting Depth   : 4
+For Loops              : 1
+While Loops            : 1
+Decision Points        : 3
+Maximum Nesting Depth  : 4
 
-Complexity Score        : 7
-Risk Classification     : Medium
+Complexity Score       : 7
+Risk Classification    : Medium
 ```
 
-## Sample Output (`input_error.txt`)
+### Syntax Error Example
 
-```
-Syntax Error (line 11): Expected ';' after assignment to 'x' but found 'return'
+```text
+Syntax Error (line 11):
+Expected ';' after assignment to 'x'
+but found 'return'
 ```
 
 ---
 
-## Known Limitations
+# ⚠️ Known Limitations
 
-- Single parameterless function per file; no function calls or parameters.
-- No arrays, strings-as-values, or user-defined types.
-- No semantic analysis (type checking) — only lexical, syntactic, and
-  structural analysis are performed, matching the term project's proposed scope.
-- Tested against four sample programs, not a full conformance suite.
-
----
-
-## Future Enhancements
-
-- Support multiple functions and function calls.
-- Add basic type checking (semantic analysis phase).
-- Export the parse tree and report as JSON/HTML for visualization.
-- Add a graphical interface.
+* Supports only one parameterless function.
+* No user-defined functions.
+* No arrays.
+* No semantic analysis (type checking).
+* Tested using multiple sample programs rather than a complete language test suite.
 
 ---
 
-## Project Information
+# 🚀 Future Enhancements
 
-**Project Title:** Compiler-Based Code Complexity Analyzer
-**Course:** Compiler Construction
+* Support multiple functions.
+* Function calls and parameters.
+* Semantic analysis.
+* Type checking.
+* Symbol table implementation.
+* JSON report export.
+* HTML report generation.
+* Graphical User Interface (GUI).
+
+---
+
+# 🛠 Technologies Used
+
+* C++
+* Object-Oriented Programming
+* Recursive Descent Parsing
+* Abstract Syntax Trees (AST)
+* Compiler Construction Concepts
+* Visual Studio Code
+* Git
+* GitHub
+
+---
+
+# 👨‍💻 Project Information
+
+| Item                 | Details                                 |
+| -------------------- | --------------------------------------- |
+| **Project**          | Compiler-Based Code Complexity Analyzer |
+| **Course**           | Compiler Construction                   |
+| **Language**         | C++                                     |
+| **Project Type**     | Individual Term Project                 |
+| **University**       | Karakoram International University      |
+| **Student**          | Rifat Hussain                           |
+| **Registration No.** | 2023-KIU-BS4019                         |
+
+---
+
+## ⭐ Acknowledgement
+
+This project was developed as part of the **Compiler Construction** course to demonstrate the practical implementation of compiler front-end concepts, including lexical analysis, parsing, Abstract Syntax Tree construction, and structural code complexity analysis.
+
+---
+
+## 📄 License
+
+This repository is intended for **academic and educational purposes only**.
+
+---
+
+
 **Project Type:** Individual Term Project
 **Language:** C++
